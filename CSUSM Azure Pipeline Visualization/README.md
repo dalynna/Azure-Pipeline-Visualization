@@ -1,4 +1,4 @@
-# 2023 CSUSM SE Capstone Team 8
+# 2025 CSUSM SE Capstone Team 2
 
 [![VSMWizard Unit Tests](https://github.com/uhhrace/2023-capstone/actions/workflows/github-actions-demo.yml/badge.svg?branch=master)](https://github.com/uhhrace/2023-capstone/actions/workflows/github-actions-demo.yml)
 
