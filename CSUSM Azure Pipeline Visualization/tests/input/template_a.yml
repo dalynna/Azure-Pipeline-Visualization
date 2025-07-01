@@ -1,0 +1,23 @@
+trigger:
+  branches:
+    exclude:
+      - master
+
+resources:
+  repositories:
+    - repository: PipelineTemplates
+      type: git
+      name: CSUSMPipelineTemplates
+
+
+steps:
+- template: reusableTemplates/echo_hello_world.yml@PipelineTemplates
+  parameters: 
+    name: 'step_2'
+    environment: 'whatever'
+- checkout: self
+  displayName: 'Checkout Self'
+  persistCredentials: true
+- powershell: ./PrintHelloWorld.ps1
+
+  displayName: 'Print Hello World'

@@ -1,0 +1,80 @@
+name: testA
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - src/**
+  tags:
+    include:
+      - v*
+
+pool:
+  vmImage: "windows-latest"
+
+schedules:
+- cron: "0 0 * * *"
+  displayName: Daily midnight build
+  always: true
+
+jobs:
+- job: Build_and_Test
+  displayName: Build and Test
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - script: |
+      echo "Building the project..."
+      dotnet build MyProject.csproj
+    displayName: 'Build'
+  - task: PowerShell@1
+    inputs:
+      command: 'run'
+      projects: 'main.py'
+    displayName: 'Python script'
+  - task: DotNet@1
+    inputs:
+      command: 'run'
+      projects: 'main.py'
+    displayName: 'Python script'
+  - task: Node@1
+    inputs:
+      command: 'run'
+      projects: 'main.py'
+    displayName: 'Python script'
+  - task: Poop@1
+    inputs:
+      command: 'run'
+      projects: 'main.py'
+    displayName: 'Python script'
+
+- job: Deploy_to_Staging
+  displayName: Deploy to Staging
+  dependsOn: Build_and_Test
+  condition: succeeded()
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: JavaApp@1
+    inputs:
+      command: 'run'
+      projects: 'main.py'
+    displayName: 'Python script'
+
+- job: Deploy_to_Production
+  displayName: Deploy to Production
+  dependsOn: Build_and_Test
+  condition: succeeded()
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: PythonScript@0
+    inputs:
+      command: 'run'
+      projects: 'main.py'
+    displayName: 'Python script'
+  - publish: "filepath"
+    artifact: "testA_Artifact"
+    displayName: "Publish Artifact"

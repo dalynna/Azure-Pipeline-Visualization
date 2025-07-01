@@ -1,0 +1,21 @@
+name: Stage_1
+trigger: none
+
+schedules:
+  - cron: "0 15 * * Fri"
+    displayName: Friday 8am PT Trigger
+    branches:
+      include:
+        - master
+    always: true
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- checkout: self
+  displayName: 'Checkout Self'
+  persistCredentials: true
+- powershell: ./PrintHelloWorld.ps1
+  displayName: 'Print Hello World'
+

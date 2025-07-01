@@ -1,0 +1,42 @@
+trigger: none
+
+pool:
+  vmImage: 'windows-latest'
+
+stages:
+- stage: Start
+  dependsOn: []
+  jobs:
+  - job: CheckoutSelf
+    steps:
+    - checkout: self
+      displayName: 'Checkout Self'
+      persistCredentials: true
+
+- stage: FanOutA
+  dependsOn: 
+    - Start
+  jobs:
+  - job: PrintHelloA  
+    steps:
+    - powershell: ./PrintHelloWorld.ps1
+      displayName: 'Print Hello World A'
+
+- stage: FanOutB
+  dependsOn:
+    - Start
+  jobs:
+  - job: PrintHelloB  
+    steps:
+    - powershell: ./PrintHelloWorld.ps1
+      displayName: 'Print Hello World B'
+
+- stage: FanIn
+  dependsOn:
+    - FanOutA
+    - FanOutB
+  jobs:
+  - job: PrintHelloC
+    steps:
+    - powershell: ./PrintHelloWorld.ps1
+      displayName: 'Print Hello World C'

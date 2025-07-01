@@ -1,0 +1,22 @@
+name: F
+trigger:
+  branches:
+    exclude:
+    - master
+    
+resources:
+  pipelines:
+    - pipeline: E to F 
+      source: E 
+      trigger:
+        branches:
+          include:
+            - master
+    
+
+steps:
+- checkout: self
+  displayName: 'Checkout Self'
+  persistCredentials: true
+- powershell: ./PrintHelloWorld.ps1
+  displayName: 'Print Hello World'

@@ -1,0 +1,97 @@
+name: Stage_3
+trigger:
+  branches:
+    exclude:
+      - master
+resources:
+  pipelines:
+    - pipeline: Stage_1_to_Stage_3
+      source: Stage_1
+      trigger:
+        branches:
+          include:
+            - master
+stages:
+  - stage: Build
+    jobs:
+      - job: Build_and_Test
+        displayName: Build and Test
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: PowerShell@1
+            inputs:
+              command: run
+              projects: main.py
+            displayName: Python script
+      - job: Build_and_Test
+        displayName: Build and Test
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: PowerShell@1
+            inputs:
+              command: run
+              projects: main.py
+            displayName: Python script
+  - stage: Deploy
+    steps:
+      - task: JavaApp@1
+        inputs:
+          command: run
+          projects: main.py
+        displayName: Python script
+  - stage: Deploy_to_Production
+jobs:
+  - job: WaitForAll
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - script: node ;ojklsmndflkjsd l;aksj fl;asjd
+        displayName: Run a script
+        env:
+          MY_SECRET: $(superSecret)
+      - script: npm install
+        displayName: npm install
+      - script: npm test
+        displayName: npm test
+      - script: node ;slkfas;ld ;asldjkfas dfasdf
+        displayName: Run a script
+  - job: Deploy_to_Staging
+    displayName: Deploy to Staging
+    dependsOn: Build_and_Test
+    condition: succeeded()
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - task: DotNet@1
+        inputs:
+          command: run
+          projects: main.py
+        displayName: Python script
+  - job: Deploy_to_Production
+    displayName: Deploy to Production
+    dependsOn: Build_and_Test
+    condition: succeeded()
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - task: PythonScript@0
+        inputs:
+          command: run
+          projects: main.py
+        displayName: Python script
+      - publish: filepath
+        artifact: testA_Artifact
+        displayName: Publish Artifact
+steps:
+  - task: Node@1
+    inputs:
+      command: run
+      projects: main.py
+    displayName: Python script
+  - task: Peepee@0
+    inputs:
+      command: run
+      projects: main.py
+    displayName: Python script

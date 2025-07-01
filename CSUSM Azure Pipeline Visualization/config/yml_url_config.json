@@ -1,0 +1,12 @@
+{
+  "yml_filepath": [
+    ["A","/Users/dalynna/Documents/Documents/CSUSM Azure Pipeline Visualization/tests/input/A.yml"],
+    ["B","/Users/dalynna/Documents/Documents/CSUSM Azure Pipeline Visualization/tests/input/B.yml"],
+    ["C","/Users/dalynna/Documents/Documents/CSUSM Azure Pipeline Visualization/tests/input/C.yml"],
+    ["D","/Users/dalynna/Documents/Documents/CSUSM Azure Pipeline Visualization/tests/input/D.yml"],
+    ["E","/Users/dalynna/Documents/Documents/CSUSM Azure Pipeline Visualization/tests/input/E.yml"]
+  ],
+  "template_dictionary": [
+    "tests/input/reusableTemplates/echo_hello_world.yml"
+  ]
+}

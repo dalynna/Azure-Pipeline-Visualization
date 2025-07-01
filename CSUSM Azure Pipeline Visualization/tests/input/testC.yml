@@ -1,0 +1,59 @@
+name: childFromTestB
+
+trigger:
+  - testB
+
+# I want to assign this YML file's parent as testB for fanning out
+# This child pipeline job runs any time the parent pipeline triggers it.
+parent: testB.yml  # Fixed indentation
+
+pool:
+  vmImage: "ubuntu-latest"
+
+# The 3 jobs this YML file must do!
+jobs:
+- job: Build_and_Test
+  displayName: Build and Test
+  steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'  # Proper indentation
+        project: 'testA'
+        definition: 00
+        specificBuildWithTriggering: true
+        buildVersionToDownload: 'latest'
+        pipelineId: 00
+        targetPath: '$(Pipeline.Workspace)'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        projects: '**/*Tests.csproj'
+      displayName: 'Test'
+
+- job: Deploy_to_Staging
+  displayName: Deploy to Staging
+  dependsOn: Build_and_Test
+  condition: succeeded()
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+    - script: |
+        echo "Deploying to staging environment..."
+        ./deploy.sh
+      displayName: 'Deploy'
+      env:
+        ENVIRONMENT: 'staging'
+
+- job: Deploy_to_Production
+  displayName: Deploy to Production
+  dependsOn: Build_and_Test
+  condition: succeeded()
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+    - script: |
+        echo "Deploying to production environment..."
+        ./deploy.sh
+      displayName: 'Deploy'
+      env:
+        ENVIRONMENT: 'production'

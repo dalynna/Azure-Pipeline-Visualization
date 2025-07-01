@@ -1,0 +1,59 @@
+name: testB
+
+trigger:
+  - main
+
+children:
+  - testC.yml
+
+pool:
+  vmImage: "ubuntu-latest"
+
+jobs:
+- job: Build_and_Test
+  displayName: Build and Test
+  steps:
+  # Download the pipeline artifact from testA
+  # This establishes a link that testB is depending on testA
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      buildType: 'specific'
+      project: 'testA'
+      definition: 00
+      specificBuildWithTriggering: true
+      buildVersionToDownload: 'latest'
+      pipelineId: 00
+      targetPath: '$(Pipeline.Workspace)'
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'test'
+      projects: '**/*Tests.csproj'
+    displayName: 'Test'
+
+- job: Deploy_to_Staging
+  displayName: Deploy to Staging
+  dependsOn: Build_and_Test
+  condition: succeeded()
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - script: |
+      echo "Deploying to staging environment..."
+      ./deploy.sh
+    displayName: 'Deploy'
+    env:
+      ENVIRONMENT: 'staging'
+
+- job: Deploy_to_Production
+  displayName: Deploy to Production
+  dependsOn: Build_and_Test
+  condition: succeeded()
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - script: |
+      echo "Deploying to production environment..."
+      ./deploy.sh
+    displayName: 'Deploy'
+    env:
+      ENVIRONMENT: 'production'

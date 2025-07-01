@@ -1,0 +1,33 @@
+# reference: https://gist.github.com/davidstaheli/6bd694dff10fbb0c98d42299bb282a64
+
+trigger: none
+
+pool:
+  vmImage: 'windows-latest'
+
+jobs:
+- job: CheckoutSelf
+  steps:
+  - checkout: self
+    displayName: 'Checkout Self'
+    persistCredentials: true
+
+- job: FanOutA  
+  dependsOn: CheckoutSelf
+  steps:
+  - powershell: ./PrintHelloWorld.ps1
+    displayName: 'Print Hello World'
+
+- job: FanOutB 
+  dependsOn: CheckoutSelf
+  steps:
+  - powershell: ./PrintHelloWorld.ps1
+    displayName: 'Print Hello World'
+
+- job: FanIn
+  dependsOn:
+  - FanoutA
+  - FanOutB
+  steps:
+  - powershell: ./PrintHelloWorld.ps1
+    displayName: 'Print Hello World'

@@ -1,0 +1,11 @@
+parameters:
+  name: ''
+  environment: ''
+
+jobs:
+- job: fromTemplate_${{parameters.name}}  
+  pool:
+    vmImage: "ubuntu-latest"
+  steps:
+    - script: echo Hello World
+      displayName: Echo Hello World From Terminal
